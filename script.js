@@ -1,9 +1,9 @@
 (function () {
   var currentState = []
   const DEFAULT_STATE = [[1, 2, 3, 4],
-  [5, 6, 7, 8],
-  [9, 10, 11, 12],
-  [13, 14, 15, 0]];
+                        [5, 6, 7, 8],
+                        [9, 10, 11, 12],
+                        [13, 14, 15, 0]];
   const ARROW_RIGHT = 37;
   const ARROW_DOWN = 38;
   const ARROW_LEFT = 39;
@@ -16,6 +16,7 @@
     }
   }
   copyArr()
+
   var renderBoard = function () {
     var main = document.querySelector(".main__box");
     main.innerHTML = "";
@@ -38,6 +39,7 @@
     }
   }
   renderBoard();
+
   var shuffle = function () {
     for (var i = 0; i < currentState.length; i++) {
       var outer = currentState[i];
@@ -50,7 +52,6 @@
         outer[currentPass] = outer[index];
         outer[index] = temp;
       }
-
     }
     var currentPass = currentState.length
     var index, temp;
@@ -143,6 +144,7 @@ function getEmptyCell(){
     }
     renderBoard()
   }
+
   shuffleBtn.addEventListener("click", shuffle);
   window.addEventListener("keydown", moveSomething, false);
 })()

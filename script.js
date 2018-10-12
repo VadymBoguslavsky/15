@@ -1,4 +1,7 @@
-  var arr = [[1, 2, 3, 4],
+(function () {
+
+  var arr = []
+  var entryArr = [[1, 2, 3, 4],
   [5, 6, 7, 8],
   [9, 10, 11, 12],
   [13, 14, 15, 0]];
@@ -10,6 +13,13 @@
   btn.addEventListener("click", function () {
     shuffle()
   });
+
+  function copyArr() {
+    for (var i = 0; i < entryArr.length; i++) {
+      arr.push(entryArr[i])
+    }
+  }
+  copyArr()
   function renderEl() {
     var main = document.querySelector(".main__box");
     main.innerHTML = "";
@@ -137,3 +147,8 @@
     }
   }
   arrowKeyMovement();
+  function checkResult() {
+
+  }
+  checkResult();
+})()

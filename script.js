@@ -1,154 +1,142 @@
 (function () {
-
-  var arr = []
-  var entryArr = [[1, 2, 3, 4],
+  var currentState = []
+  const DEFAULT_STATE = [[1, 2, 3, 4],
   [5, 6, 7, 8],
   [9, 10, 11, 12],
   [13, 14, 15, 0]];
-  const arrowRight = 37;
-  const arrowDown = 38;
-  const arrowLeft = 39;
-  const arrowUp = 40;
-  var btn = document.querySelector(".shuffle");
-  btn.addEventListener("click", function () {
-    shuffle()
-  });
+  const ARROW_RIGHT = 37;
+  const ARROW_DOWN = 38;
+  const ARROW_LEFT = 39;
+  const ARROW_UP = 40;
+  var shuffleBtn = document.querySelector(".shuffle");
 
   function copyArr() {
-    for (var i = 0; i < entryArr.length; i++) {
-      arr.push(entryArr[i])
+    for (var i = 0; i < DEFAULT_STATE.length; i++) {
+      currentState.push(DEFAULT_STATE[i])
     }
   }
   copyArr()
-  function renderEl() {
+  var renderBoard = function () {
     var main = document.querySelector(".main__box");
     main.innerHTML = "";
-    for (var i = 0; i < arr.length; i++) {
-      var outer = arr[i];
+    for (var i = 0; i < currentState.length; i++) {
+      var outer = currentState[i];
       for (var j = 0; j < outer.length; j++) {
         var span = document.createElement("span");
         if (outer[j] == 0) {
           span.innerHTML = " ";
           main.appendChild(span);
-          span.classList.add("itmNumber", "empty");
-        }
-        else if (outer[j] == undefined || outer[j] == " ") {
+          span.classList.add("itemNumber", "empty");
+        } else if (outer[j] == undefined || outer[j] == " ") {
           outer.splice(outer[j], 1)
-        }
-        else {
+        } else {
           span.innerHTML = outer[j];
           main.appendChild(span);
-          span.classList.add("itmNumber");
+          span.classList.add("itemNumber");
         }
       }
     }
   }
-  renderEl();
-  function shuffle() {
-    for (var i = 0; i < arr.length; i++) {
-      var outer = arr[i];
-      for (var j = 0; j < outer.length; j++) {
-        var currentPass = outer.length
-        var index, temp;
-        while (currentPass > 0) {
-          index = Math.floor(Math.random() * currentPass);
-          currentPass--;
-          temp = outer[currentPass];
-          outer[currentPass] = outer[index];
-          outer[index] = temp;
-        }
+  renderBoard();
+  var shuffle = function () {
+    for (var i = 0; i < currentState.length; i++) {
+      var outer = currentState[i];
+      var currentPass = currentState[i].length
+      var index, temp;
+      while (currentPass > 0) {
+        index = Math.floor(Math.random() * currentPass);
+        currentPass--;
+        temp = outer[currentPass];
+        outer[currentPass] = outer[index];
+        outer[index] = temp;
       }
+
     }
-    var currentPass = arr.length
+    var currentPass = currentState.length
     var index, temp;
     while (currentPass > 0) {
       index = Math.floor(Math.random() * currentPass);
       currentPass--;
-      temp = arr[currentPass];
-      arr[currentPass] = arr[index];
-      arr[index] = temp;
+      temp = currentState[currentPass];
+      currentState[currentPass] = currentState[index];
+      currentState[index] = temp;
     }
-    renderEl();
+    renderBoard();
   };
 
-
+function getEmptyCellRow() {
+  var rowWithEmptyIndex = currentState.findIndex(el => {
+    return el.indexOf(0) !== -1
+  });
+  return rowWithEmptyIndex
+}
+function getEmptyCell(){
+  var emptyCellRow = getEmptyCellRow();
+  var indexOfEmptyCell = currentState[emptyCellRow].indexOf(0);
+  return indexOfEmptyCell
+}
   function moveLeft() {
-    arr.map(el => {
-      var index = el.indexOf(0);
-      var prevElem = index - 1;
-      if (prevElem < 0) {
-        return;
-      }
-      el[index] = el[prevElem];
-      el[prevElem] = 0;
-    })
+    var rowWithEmptyIndex = getEmptyCellRow()
+    var indexOfEmptyCell = getEmptyCell()
+    var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) - 1;
+    if(indexOfPrevious < 0){
+      return
+    }
+    currentState[rowWithEmptyIndex][indexOfEmptyCell] =
+        currentState[rowWithEmptyIndex][indexOfPrevious];
+    currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
   }
 
   function moveUp() {
-    arr.map(el => {
-      var index = el.indexOf(0);
-      if (index !== -1) {
-        var arrIndex = arr.indexOf(el);
-        var prevArr = arrIndex - 1;
-        var prevArrValue = arr[prevArr][index];
-        var zeroNumIndex = arr[prevArr].indexOf(prevArrValue);
-        el[index] = arr[prevArr][zeroNumIndex];
-        arr[prevArr][zeroNumIndex] = 0;
-      }
-    })
+    var rowWithEmptyIndex = getEmptyCellRow()
+    var nextRow = rowWithEmptyIndex -1;
+    if(nextRow < 0){
+      return
+    }
+    var emptyCellColumn = getEmptyCell()
+    currentState[rowWithEmptyIndex][emptyCellColumn] =
+      currentState[nextRow][emptyCellColumn];
+    currentState[nextRow][emptyCellColumn] = 0;
   };
   function moveDown() {
-    var index = arr.findIndex(el => {
-      return el.indexOf(0) !== -1
-    });
-    var nexrArr = index + 1;
-    var zeroIndex = arr[index].indexOf(0);
-    arr[index][zeroIndex] = arr[nexrArr][zeroIndex];
-    arr[nexrArr][zeroIndex] = 0;
+    var rowWithEmptyIndex = getEmptyCellRow()
+    var nextRow = rowWithEmptyIndex + 1;
+    if (nextRow > currentState.length-1) {
+      return
+    }
+    var emptyCellColumn = getEmptyCell()
+    currentState[rowWithEmptyIndex][emptyCellColumn] = 
+        currentState[nextRow][emptyCellColumn];
+    currentState[nextRow][emptyCellColumn] = 0;
   };
   function moveRight() {
-    arr.map(el => {
-      if (el.indexOf(0) != -1
-        && el.indexOf(0) >= 0
-        && el.indexOf(0) <= el.length) {
-        var index = el.indexOf(0);
-        var prevElem = index + 1;
-        if (prevElem < el.length) {
-          el[index] = el[prevElem];
-          el[prevElem] = 0;
-          return
-        } else {
-          return
-        }
-      }
-    })
-  };
-  function arrowKeyMovement() {
-    window.addEventListener("keydown", moveSomething, false);
-    function moveSomething(e) {
-      switch (e.keyCode) {
-        case arrowRight:
-          moveRight();
-          renderEl()
-          break;
-        case arrowDown:
-          moveDown();
-          renderEl();
-          break;
-        case arrowLeft:
-          moveLeft()
-          renderEl()
-          break;
-        case arrowUp:
-          moveUp();
-          renderEl();
-          break;
-      }
+    var rowWithEmptyIndex = getEmptyCellRow()
+    var indexOfEmptyCell = getEmptyCell()
+    var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) + 1;
+    if (indexOfPrevious < currentState[rowWithEmptyIndex].length) {
+      currentState[rowWithEmptyIndex][indexOfEmptyCell] =
+          currentState[rowWithEmptyIndex][indexOfPrevious];
+      currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
     }
-  }
-  arrowKeyMovement();
-  function checkResult() {
+  };
 
+  function moveSomething(e) {
+    switch (e.keyCode) {
+      case ARROW_RIGHT:
+        moveRight();
+        break;
+      case ARROW_DOWN:
+        moveDown();
+        break;
+      case ARROW_LEFT:
+        moveLeft()
+        break;
+      case ARROW_UP:
+        moveUp();
+        break;
+    }
+    renderBoard()
   }
-  checkResult();
+  shuffleBtn.addEventListener("click", shuffle);
+  window.addEventListener("keydown", moveSomething, false);
 })()

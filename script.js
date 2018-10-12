@@ -75,6 +75,19 @@ function getEmptyCell(){
   var indexOfEmptyCell = currentState[emptyCellRow].indexOf(0);
   return indexOfEmptyCell
 }
+
+  function fromUpDown(rowWithEmptyIndex, emptyCellColumn, nextRow, emptyCellColumn) {
+    currentState[rowWithEmptyIndex][emptyCellColumn] =
+      currentState[nextRow][emptyCellColumn];
+    currentState[nextRow][emptyCellColumn] = 0;
+  }
+
+  function fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious) {
+    currentState[rowWithEmptyIndex][indexOfEmptyCell] =
+      currentState[rowWithEmptyIndex][indexOfPrevious];
+    currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
+  }
+
   function moveLeft() {
     var rowWithEmptyIndex = getEmptyCellRow()
     var indexOfEmptyCell = getEmptyCell()
@@ -82,9 +95,7 @@ function getEmptyCell(){
     if(indexOfPrevious < 0){
       return
     }
-    currentState[rowWithEmptyIndex][indexOfEmptyCell] =
-        currentState[rowWithEmptyIndex][indexOfPrevious];
-    currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
+    fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious)
   }
 
   function moveUp() {
@@ -94,9 +105,7 @@ function getEmptyCell(){
       return
     }
     var emptyCellColumn = getEmptyCell()
-    currentState[rowWithEmptyIndex][emptyCellColumn] =
-      currentState[nextRow][emptyCellColumn];
-    currentState[nextRow][emptyCellColumn] = 0;
+    fromUpDown(rowWithEmptyIndex, emptyCellColumn, nextRow, emptyCellColumn)
   };
   function moveDown() {
     var rowWithEmptyIndex = getEmptyCellRow()
@@ -105,18 +114,15 @@ function getEmptyCell(){
       return
     }
     var emptyCellColumn = getEmptyCell()
-    currentState[rowWithEmptyIndex][emptyCellColumn] = 
-        currentState[nextRow][emptyCellColumn];
-    currentState[nextRow][emptyCellColumn] = 0;
+    fromUpDown(rowWithEmptyIndex, emptyCellColumn, nextRow, emptyCellColumn)
   };
+
   function moveRight() {
     var rowWithEmptyIndex = getEmptyCellRow()
     var indexOfEmptyCell = getEmptyCell()
     var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) + 1;
     if (indexOfPrevious < currentState[rowWithEmptyIndex].length) {
-      currentState[rowWithEmptyIndex][indexOfEmptyCell] =
-          currentState[rowWithEmptyIndex][indexOfPrevious];
-      currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
+      fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious)
     }
   };
 

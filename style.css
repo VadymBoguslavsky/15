@@ -1,0 +1,47 @@
+  .main__box {
+    margin-top: 50px;
+    width: 500px;
+    height: 500px;
+    margin: 50px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  #templateItem {
+    background-color: white;
+  }
+
+  .itmNumber {
+    width: 121px;
+    height: 121px;
+    background-color: white;
+    border: 2px solid black;
+    color: orange;
+    font-size: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .shuffle {
+    width: 100px;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    top: 50px;
+    left: 350px;
+    background-color: blueviolet;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    text-transform: capitalize;
+    color: white;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    outline: none;
+  }
+
+  .empty {
+    background-color: orange;
+    border-color: black;
+  }

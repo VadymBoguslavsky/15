@@ -77,7 +77,7 @@ function getEmptyCell(){
   return indexOfEmptyCell
 }
 
-  function fromUpDown(rowWithEmptyIndex, emptyCellColumn, nextRow, emptyCellColumn) {
+  function fromUpDown(rowWithEmptyIndex, emptyCellColumn, nextRow) {
     currentState[rowWithEmptyIndex][emptyCellColumn] =
       currentState[nextRow][emptyCellColumn];
     currentState[nextRow][emptyCellColumn] = 0;
@@ -101,21 +101,21 @@ function getEmptyCell(){
 
   function moveUp() {
     var rowWithEmptyIndex = getEmptyCellRow()
-    var nextRow = rowWithEmptyIndex -1;
-    if(nextRow < 0){
+    var indexOfEmptyCell = getEmptyCell()
+    var indexOfPrevious = rowWithEmptyIndex -1;
+    if (indexOfPrevious < 0){
       return
     }
-    var emptyCellColumn = getEmptyCell()
-    fromUpDown(rowWithEmptyIndex, emptyCellColumn, nextRow, emptyCellColumn)
+    fromUpDown(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious)
   };
   function moveDown() {
     var rowWithEmptyIndex = getEmptyCellRow()
-    var nextRow = rowWithEmptyIndex + 1;
-    if (nextRow > currentState.length-1) {
+    var indexOfEmptyCell = getEmptyCell()
+    var indexOfPrevious = rowWithEmptyIndex + 1;
+    if (indexOfPrevious > currentState.length-1) {
       return
     }
-    var emptyCellColumn = getEmptyCell()
-    fromUpDown(rowWithEmptyIndex, emptyCellColumn, nextRow, emptyCellColumn)
+    fromUpDown(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious)
   };
 
   function moveRight() {

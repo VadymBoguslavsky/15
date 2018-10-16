@@ -18,7 +18,6 @@
     }
   }
   copyArr();
-
   var renderBoard = function () {
     var main = document.querySelector(".main__box");
     main.innerHTML = "";
@@ -41,7 +40,6 @@
     }
   }
   renderBoard();
-
   var shuffle = function () {
     for (var i = 0; i < currentState.length; i++) {
       var outer = currentState[i];
@@ -66,7 +64,6 @@
     }
     renderBoard();
   };
-
 function getEmptyCellRow() {
   var rowWithEmptyIndex = currentState.findIndex(el => {
     return el.indexOf(0) !== -1;
@@ -92,13 +89,13 @@ function getEmptyCell(){
   }
 
   function moveLeft() {
-    var rowWithEmptyIndex = getEmptyCellRow()
-    var indexOfEmptyCell = getEmptyCell()
+    var rowWithEmptyIndex = getEmptyCellRow();
+    var indexOfEmptyCell = getEmptyCell();
     var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) - 1;
     if(indexOfPrevious < 0){
       return
     }
-    fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious)
+    fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious);
   }
 
   function moveUp() {
@@ -108,7 +105,7 @@ function getEmptyCell(){
     if (indexOfPrevious < 0){
       return
     }
-    fromUpDown(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious)
+    fromUpDown(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious);
   };
   function moveDown() {
     var rowWithEmptyIndex = getEmptyCellRow();
@@ -146,20 +143,20 @@ function getEmptyCell(){
     }
     
     renderBoard();
-    compareArray();
+    ifVictory();
   }
-  function compareArray(){
+  function ifVictory(){
+    var isGameWon = true;
     for (var i = 0; i < DEFAULT_STATE.length; i++) {
       for (var j = 0; j < currentState.length; j++) {
-        if (currentState[i][j] === DEFAULT_STATE[i][j]) {
-          console.log("true")
-        } else {
-          console.log("false")
-        }
+        if (currentState[i][j] !== DEFAULT_STATE[i][j]) {
+         isGameWon = false;
+        } 
       }
     }
-   
-
+    if(isGameWon){
+      alert("You won");
+    } 
   }
   
   shuffleBtn.addEventListener("click", shuffle);

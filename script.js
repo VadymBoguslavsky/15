@@ -8,9 +8,8 @@
   const ARROW_DOWN = 38;
   const ARROW_LEFT = 39;
   const ARROW_UP = 40;
-  var shuffleBtn = document.querySelector(".shuffle");
 
-  function copyArr() {
+  var initGameState = function() {
     for (var i = 0; i < DEFAULT_STATE.length; i++) {
       currentState[i] = [];
       for (var j = 0; j < DEFAULT_STATE[i].length; j++) {
@@ -20,7 +19,7 @@
   }
 
 
-  var renderBoard = function () {
+  var renderBoard = function() {
     var main = document.querySelector(".main-box");
     main.innerHTML = "";
     for (var i = 0; i < currentState.length; i++) {
@@ -43,7 +42,7 @@
   }
 
 
-  var shuffle = function () {
+  var shuffle = function() {
     for (var i = 0; i < currentState.length; i++) {
       var outer = currentState[i];
       var currentPass = currentState[i].length;
@@ -68,20 +67,20 @@
     renderBoard();
   };
 
-  var getEmptyCellRow = function () {
+  var getEmptyCellRow = function() {
     var rowWithEmptyIndex = currentState.findIndex(el => {
       return el.indexOf(0) !== -1;
     });
     return rowWithEmptyIndex;
   }
 
-  var getEmptyCell = function () {
+  var getEmptyCell = function() {
     var emptyCellRow = getEmptyCellRow();
     var indexOfEmptyCell = currentState[emptyCellRow].indexOf(0);
     return indexOfEmptyCell;
   }
 
-  var moveLeft = function () {
+  var moveLeft = function() {
     var rowWithEmptyIndex = getEmptyCellRow();
     var indexOfEmptyCell = getEmptyCell();
     var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) - 1;
@@ -93,19 +92,19 @@
     currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
   }
 
-  var moveUp = function () {
+  var moveUp = function() {
     var rowWithEmptyIndex = getEmptyCellRow();
     var indexOfEmptyCell = getEmptyCell();
     var indexOfPrevious = rowWithEmptyIndex - 1;
     if (indexOfPrevious < 0) {
       return;
-    }
+    };
     currentState[rowWithEmptyIndex][indexOfEmptyCell] =
       currentState[indexOfPrevious][indexOfEmptyCell];
     currentState[indexOfPrevious][indexOfEmptyCell] = 0;
   };
 
-  var moveDown = function () {
+  var moveDown = function() {
     var rowWithEmptyIndex = getEmptyCellRow();
     var indexOfEmptyCell = getEmptyCell();
     var indexOfPrevious = rowWithEmptyIndex + 1;
@@ -117,7 +116,7 @@
     currentState[indexOfPrevious][indexOfEmptyCell] = 0;
   };
 
-  var moveRight = function () {
+  var moveRight = function() {
     var rowWithEmptyIndex = getEmptyCellRow();
     var indexOfEmptyCell = getEmptyCell();
     var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) + 1;
@@ -125,7 +124,7 @@
       currentState[rowWithEmptyIndex][indexOfEmptyCell] =
         currentState[rowWithEmptyIndex][indexOfPrevious];
       currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
-    }
+    };
   };
 
   var moveBlock = function (e) {
@@ -147,26 +146,26 @@
     checkUserWon();
   }
 
-  var checkUserWon = function () {
+  var checkUserWon = function() {
     var isGameWon = true;
     for (var i = 0; i < DEFAULT_STATE.length; i++) {
       for (var j = 0; j < currentState.length; j++) {
         if (currentState[i][j] !== DEFAULT_STATE[i][j]) {
           isGameWon = false;
-        }
-      }
-    }
+        };
+      };
+    };
     if (isGameWon) {
       alert("You won");
     }
   }
 
-  var initBoard = function () {
-    copyArr();
+  var initGame = function() {
+    var shuffleBtn = document.querySelector(".shuffle");
+    shuffleBtn.addEventListener("click", shuffle);
+    window.addEventListener("keydown", moveBlock, false);
+    initGameState();
     renderBoard();
-  } 
-  initBoard();
-
-  shuffleBtn.addEventListener("click", shuffle);
-  window.addEventListener("keydown", moveBlock, false);
-})()
+  };
+  initGame();
+})();

@@ -1,25 +1,27 @@
 (function () {
   var currentState = [];
   const DEFAULT_STATE = [[1, 2, 3, 4],
-                        [5, 6, 7, 8],
-                        [9, 10, 11, 12],
-                        [13, 14, 15, 0]];
+  [5, 6, 7, 8],
+  [9, 10, 11, 12],
+  [13, 14, 15, 0]];
   const ARROW_RIGHT = 37;
   const ARROW_DOWN = 38;
   const ARROW_LEFT = 39;
   const ARROW_UP = 40;
   var shuffleBtn = document.querySelector(".shuffle");
+
   function copyArr() {
     for (var i = 0; i < DEFAULT_STATE.length; i++) {
       currentState[i] = [];
-      for(var j=0;j<DEFAULT_STATE[i].length;j++){
+      for (var j = 0; j < DEFAULT_STATE[i].length; j++) {
         currentState[i].push(DEFAULT_STATE[i][j]);
       }
     }
   }
-  copyArr();
+
+
   var renderBoard = function () {
-    var main = document.querySelector(".main__box");
+    var main = document.querySelector(".main-box");
     main.innerHTML = "";
     for (var i = 0; i < currentState.length; i++) {
       var outer = currentState[i];
@@ -39,7 +41,8 @@
       }
     }
   }
-  renderBoard();
+
+
   var shuffle = function () {
     for (var i = 0; i < currentState.length; i++) {
       var outer = currentState[i];
@@ -53,7 +56,7 @@
         outer[index] = temp;
       }
     }
-    var currentPass = currentState.length
+    var currentPass = currentState.length;
     var index, temp;
     while (currentPass > 0) {
       index = Math.floor(Math.random() * currentPass);
@@ -64,69 +67,68 @@
     }
     renderBoard();
   };
-function getEmptyCellRow() {
-  var rowWithEmptyIndex = currentState.findIndex(el => {
-    return el.indexOf(0) !== -1;
-  });
-  return rowWithEmptyIndex;
-}
-function getEmptyCell(){
-  var emptyCellRow = getEmptyCellRow();
-  var indexOfEmptyCell = currentState[emptyCellRow].indexOf(0);
-  return indexOfEmptyCell;
-}
 
-  function fromUpDown(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious) {
-    currentState[rowWithEmptyIndex][indexOfEmptyCell] =
-      currentState[indexOfPrevious][indexOfEmptyCell];
-    currentState[indexOfPrevious][indexOfEmptyCell] = 0;
+  var getEmptyCellRow = function () {
+    var rowWithEmptyIndex = currentState.findIndex(el => {
+      return el.indexOf(0) !== -1;
+    });
+    return rowWithEmptyIndex;
   }
 
-  function fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious) {
+  var getEmptyCell = function () {
+    var emptyCellRow = getEmptyCellRow();
+    var indexOfEmptyCell = currentState[emptyCellRow].indexOf(0);
+    return indexOfEmptyCell;
+  }
+
+  var moveLeft = function () {
+    var rowWithEmptyIndex = getEmptyCellRow();
+    var indexOfEmptyCell = getEmptyCell();
+    var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) - 1;
+    if (indexOfPrevious < 0) {
+      return;
+    }
     currentState[rowWithEmptyIndex][indexOfEmptyCell] =
       currentState[rowWithEmptyIndex][indexOfPrevious];
     currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
   }
 
-  function moveLeft() {
+  var moveUp = function () {
     var rowWithEmptyIndex = getEmptyCellRow();
     var indexOfEmptyCell = getEmptyCell();
-    var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) - 1;
-    if(indexOfPrevious < 0){
-      return
+    var indexOfPrevious = rowWithEmptyIndex - 1;
+    if (indexOfPrevious < 0) {
+      return;
     }
-    fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious);
-  }
-
-  function moveUp() {
-    var rowWithEmptyIndex = getEmptyCellRow();
-    var indexOfEmptyCell = getEmptyCell();
-    var indexOfPrevious = rowWithEmptyIndex -1;
-    if (indexOfPrevious < 0){
-      return
-    }
-    fromUpDown(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious);
+    currentState[rowWithEmptyIndex][indexOfEmptyCell] =
+      currentState[indexOfPrevious][indexOfEmptyCell];
+    currentState[indexOfPrevious][indexOfEmptyCell] = 0;
   };
-  function moveDown() {
+
+  var moveDown = function () {
     var rowWithEmptyIndex = getEmptyCellRow();
     var indexOfEmptyCell = getEmptyCell();
     var indexOfPrevious = rowWithEmptyIndex + 1;
-    if (indexOfPrevious > currentState.length-1) {
-      return
+    if (indexOfPrevious > currentState.length - 1) {
+      return;
     };
-    fromUpDown(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious);
+    currentState[rowWithEmptyIndex][indexOfEmptyCell] =
+      currentState[indexOfPrevious][indexOfEmptyCell];
+    currentState[indexOfPrevious][indexOfEmptyCell] = 0;
   };
 
-  function moveRight() {
+  var moveRight = function () {
     var rowWithEmptyIndex = getEmptyCellRow();
     var indexOfEmptyCell = getEmptyCell();
     var indexOfPrevious = currentState[rowWithEmptyIndex].indexOf(0) + 1;
     if (indexOfPrevious < currentState[rowWithEmptyIndex].length) {
-      fromLeftRight(rowWithEmptyIndex, indexOfEmptyCell, indexOfPrevious);
+      currentState[rowWithEmptyIndex][indexOfEmptyCell] =
+        currentState[rowWithEmptyIndex][indexOfPrevious];
+      currentState[rowWithEmptyIndex][indexOfPrevious] = 0;
     }
   };
 
-  function moveSomething(e) {
+  var moveBlock = function (e) {
     switch (e.keyCode) {
       case ARROW_RIGHT:
         moveRight();
@@ -141,24 +143,30 @@ function getEmptyCell(){
         moveUp();
         break;
     }
-    
     renderBoard();
-    ifVictory();
+    checkUserWon();
   }
-  function ifVictory(){
+
+  var checkUserWon = function () {
     var isGameWon = true;
     for (var i = 0; i < DEFAULT_STATE.length; i++) {
       for (var j = 0; j < currentState.length; j++) {
         if (currentState[i][j] !== DEFAULT_STATE[i][j]) {
-         isGameWon = false;
-        } 
+          isGameWon = false;
+        }
       }
     }
-    if(isGameWon){
+    if (isGameWon) {
       alert("You won");
-    } 
+    }
   }
-  
+
+  var initBoard = function () {
+    copyArr();
+    renderBoard();
+  } 
+  initBoard();
+
   shuffleBtn.addEventListener("click", shuffle);
-  window.addEventListener("keydown", moveSomething, false);
+  window.addEventListener("keydown", moveBlock, false);
 })()
